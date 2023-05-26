@@ -5,7 +5,7 @@ const { HttpError } = require('../helpers');
 const listContacts = async (req, res, next) => {
   try {
     const { _id: owner } = req.user;
-    const result = await Contact.find({owner});
+    const result = await Contact.find({owner}).populate("owner",'email');
     res.json(result);
   } catch (error) {
     next(error);

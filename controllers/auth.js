@@ -7,7 +7,7 @@ const bcrypt = require('bcrypt');
 const { SECRET_KEY } = process.env;
 
 const { HttpError } = require('../helpers');
-const { response } = require('../app');
+
 
 const register = async (req, res, next) => {
     try {
@@ -20,9 +20,11 @@ const register = async (req, res, next) => {
         const hashPassword =await bcrypt.hash(password, 10);
         
         const newUser = await User.create({ ...req.body, password:hashPassword });
-      res.status(201).json({
-          email: newUser.email,
-          subscription: newUser.subscription,
+        res.status(201).json({
+            user: {
+                email: newUser.email,
+                subscription: newUser.subscription,
+            }
     });
   } catch (error) {
     next(error);
@@ -45,8 +47,10 @@ const login = async (req, res, next) => {
         await User.findByIdAndUpdate(user._id, { token });
         res.json({
             token,
-            email: user.email,
-            subscription: user.subscription,
+            user: {
+                email: user.email,
+                subscription: user.subscription,
+            }
         })
   } catch (error) {
     next(error);
